@@ -1,0 +1,12 @@
+numpy>=1.26
+scipy>=1.11
+pyyaml>=6.0
+torch>=2.3
+scikit-learn>=1.4
+xgboost>=2.0
+pandas>=2.1
+eclipse-sumo>=1.20
+traci>=1.20
+sumolib>=1.20
+llama-cpp-python>=0.2.80
+openai>=1.30

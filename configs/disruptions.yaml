@@ -1,0 +1,35 @@
+# Scripted disruption suite. Injected through TraCI. Evaluation window [1200, 2400] s.
+evaluation:
+  window_s: [1200, 2400]
+  D1: {mode: INC, type: lane_closure, lanes_closed: 2, site: central_intersection, highest_flow_lanes: true}
+  D2: {mode: SRG, type: demand_surge, od_relations: 3, factor: 1.5, heaviest: true}
+  D3: {mode: DEG, type: detector_freeze, fraction: 0.3, resample_per_seed: true}
+  D4: {mode: EMG, type: emergency_vehicles, count: 3, headway_s: 480, flagged: true, priority: true}
+
+# Domain-randomized training distribution (same four classes, drawn independently).
+training:
+  p_event: 0.25
+  onset_s: [600, 2400]
+  duration_s: [600, 1500]
+  D1: {lanes_closed: [1, 2], site: uniform_intersection}
+  D2: {od_relations: [1, 3], factor: [1.2, 1.6]}
+  D3: {fraction: [0.1, 0.5]}
+  D4: {count: [1, 3], route: random}
+  label_noise_confusion: null    # set to a confusion matrix file for the noisy-label variant (Comment 2.7)
+
+# Out-of-distribution conditions (Table 8), Ingolstadt21, standard training.
+ood:
+  leave_one_out: [D1, D2, D3, D4]
+  three_lane_closure_two_intersections: {type: lane_closure, lanes_closed: 3, intersections: 2}
+  surge_80_five_od: {type: demand_surge, od_relations: 5, factor: 1.8}
+  long_closure_2400s: {type: lane_closure, lanes_closed: 2, duration_s: 2400}
+  noisy_detectors: {type: detector_noise, fraction: 0.3, sigma: 0.3, multiplicative: true}
+  biased_detectors: {type: detector_bias, fraction: 0.3, bias: 0.4}
+  intermittent_detectors: {type: detector_dropout, fraction: 0.3, duty_cycle: 0.5}
+  message_loss: {type: gat_message_loss, rate: 0.2}
+
+# Compound events (Table 9).
+compound:
+  D1_D2: [D1, D2]
+  D1_D3: [D1, D3]
+  D3_D4: [D3, D4]

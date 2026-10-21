@@ -1,0 +1,28 @@
+# Experiment registry. Each name maps to a paper table/section; per-seed results are written as CSV.
+output_dir: results
+experiments:
+  main_performance:      {networks: [grid4x4, cologne8, ingolstadt21, monaco15], methods: [fixed_time, max_pressure, idqn, ippo, mplight, colight, mgmq, enb_rl, llmlight, illm_tsc, resilight], metrics: [att, awt, att_plus, completion, throughput, co2, ev_time, violations]}
+  disruption_suite:      {networks: [ingolstadt21, cologne8, monaco15], disruptions: [D1, D2, D3, D4], include_frozen_grid_policy_on: [monaco15]}
+  ood_and_compound:      {network: ingolstadt21, methods: [enb_rl, resilight], leave_one_out: true, ood: true, compound: true}
+  zero_shot_transfer:    {train: grid4x4, test: [cologne8, ingolstadt21, monaco15], reference: native}
+  ablation:              {network: ingolstadt21, variants: [full, no_physics, no_gat, no_gat_no_physics, no_supervisor, no_mode_conditioning, no_deg_imputation, no_preemption, no_spillback, no_shield, no_validity_check]}
+  mode_baselines:        {network: ingolstadt21, controllers: [colight_mc, enb_rl_mc, resilight], modes: [none, llm, oracle]}
+  prior_alternatives:    {network: ingolstadt21}
+  sensitivity:
+    reward_weights: {draws: 40, log_uniform_factor: [0.5, 1.5], norm_weights_everywhere: true, retune_on_target: true}
+    lambda_end: [0, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0]
+    spillback_threshold: [0.7, 0.8, 0.85, 0.9, 0.95, off]
+  supervisors:
+    network: ingolstadt21
+    cycles: 6000
+    episodes: 100
+    variants: [none, rule, rule_localization, xgb_grid_raw, xgb_grid_norm, xgb_multi_norm, mlp_multi_norm, settransformer_multi_norm, llama_8b, llama_8b_no_localization, llama_8b_no_rules, qwen_14b, gpt_4o, oracle]
+  label_noise:           {network: ingolstadt21, confusion_source: llama_8b}
+  scalability:           {grids: [grid4x4, grid6x6, grid10x10], digest_top_k: [5, 10]}
+  compute:               {gpu: RTX4090, report: [tuning_hours, training_hours, latency_ms]}
+statistics:
+  tests: [wilcoxon, paired_t]
+  correction: holm
+  significance: both_corrected_p_below_0.05
+  bootstrap: {resamples: 10000, ci: 0.95}
+  effect_size: dz

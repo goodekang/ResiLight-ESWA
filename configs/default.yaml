@@ -1,0 +1,79 @@
+# Hyperparameters of the ResiLight controller and supervisor (Supplementary Table S1).
+control:
+  decision_interval_s: 5          # Delta t
+  supervisory_cycle_s: 60         # T_s
+  episode_s: 3600
+  gamma: 0.98
+
+model:
+  embed_dim: 128
+  gat_hidden: 128
+  gat_layers: 2                   # K
+  gat_heads: 4
+  movement_slots: 12              # per intersection
+  mode_embed_dim: 16
+  max_neighbors: 4
+
+train:
+  total_env_steps: 1_200_000
+  replay_size: 500_000
+  batch_size: 256
+  lr: 3.0e-4                      # Adam
+  target_update_every: 2000
+  epsilon_start: 1.0
+  epsilon_end: 0.02
+  epsilon_decay_steps: 400_000
+  per_alpha: 0.6
+  per_beta0: 0.4
+  grad_clip: 10.0
+  warmup_steps: 5000
+  update_every: 1
+  train_networks: [grid4x4]       # zero-shot transfer protocol; real networks only for native references
+
+physics:
+  lambda_start: 1.0
+  lambda_end: 0.1
+  lambda_anneal_frac: 0.6         # first 60% of steps
+  tau: 1.0                        # policy temperature
+  tau_p: 0.5                      # prior temperature
+  kl_direction: forward           # D_KL(pi_MP || pi_theta) over shield-admissible phases
+  spacing_m: 7.5                  # average spacing per stopped vehicle -> lane storage capacity
+
+shield:
+  g_min_s: 10
+  g_max_s: 60
+  yellow_s: 3
+  all_red_s: 2
+  spillback_threshold: 0.9        # rho_sb
+  spillback_enabled: true
+  hard_constraints_enabled: true
+
+preemption:
+  horizon_s: 90
+  bonus_std_multiplier: 10.0      # beta = 10 x s.d. of admissible Q-values
+
+imputation:
+  ewm_alpha: 0.1                  # exponentially weighted historical mean
+  health_persistence_s: 120       # frozen-detector persistence for the health counter
+
+supervisor:
+  backend: llama_cpp              # llama_cpp | openai | hf
+  model: Llama-3.1-8B-Instruct
+  quantization: 4bit
+  temperature: 0.2
+  grammar: json                   # grammar-constrained decoding
+  call_budget_s: 5
+  confidence_threshold: 0.7
+  consecutive_proposals: 2
+  fallback_after_failures: 3
+  digest_top_k: 5
+  digest_tokens_target: 900
+  samples_per_cycle: 1            # 5 for the repeated-sampling analysis (Table 7)
+
+baseline_tuning:
+  configurations: 24
+  seeds: 3
+  tuning_network: grid4x4
+
+disruption_training:
+  p_event: 0.25

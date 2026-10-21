@@ -1,0 +1,44 @@
+# Baselines. Common: lane-level measurements, shield, 1.2M steps, disruption-randomized training,
+# 24-configuration x 3-seed tuning budget starting from the original-paper values.
+common:
+  shield: true
+  disruption_training: true
+  total_env_steps: 1_200_000
+  tuning: {configurations: 24, seeds: 3, network: grid4x4}
+
+fixed_time:  {type: classical, plan: webster, keep_phase_structure: true}
+max_pressure: {type: classical, shielded: true, decision_interval_s: 5}
+idqn:     {type: marl, code: resco_reference, algo: ddqn, coordination: none}
+ippo:     {type: marl, code: resco_reference, algo: ppo, coordination: none}
+mplight:  {type: marl, code: resco_reference, algo: dqn, reward: pressure, head: frap, parameter_sharing: true}
+colight:  {type: marl, code: libsignal, algo: dqn, graph_attention: true}
+mgmq:     {type: marl, code: authors_released, algo: multi_layer_graph_mask_q}
+enb_rl:   {type: marl, code: reimplementation, algo: neighborhood_backtracking}   # from published description
+llmlight:
+  type: llm
+  code: authors_released
+  prompt: third_party/llmlight/prompts
+  backbone: Llama-3.1-8B-Instruct
+  pause_sim_during_inference: true
+  realtime_variant: {sequential_inference: true, hold_phase_until_response: true}
+illm_tsc:
+  type: hybrid
+  code: authors_released
+  prompt: third_party/illm_tsc/prompts
+  backbone: Llama-3.1-8B-Instruct
+  proposer: pressure_ddqn
+  pause_sim_during_inference: true
+
+# Mode-conditioned controls (Table 11): same reward, labels, embedding, imputation, pre-emption as ResiLight.
+mode_conditioned:
+  colight_mc: {base: colight, mode_execution: [llm, oracle]}
+  enb_rl_mc:  {base: enb_rl,  mode_execution: [llm, oracle]}
+
+# Alternatives to the KL prior (Table 12).
+prior_alternatives:
+  none:                 {lambda_start: 0.0, lambda_end: 0.0}
+  behavior_cloning:     {pretrain: max_pressure_bc, then: ddqn}
+  pressure_shaping:     {extra_reward_term: pressure}
+  q_initialization:     {pretrain: regress_q_to_pressure_ranking}
+  residual_q:           {q: residual_over_scaled_pressure}
+  kl_prior:             {lambda_start: 1.0, lambda_end: 0.1}

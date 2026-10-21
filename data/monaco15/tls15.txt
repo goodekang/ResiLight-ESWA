@@ -1,0 +1,16 @@
+# main east-west arterial, west to east
+9480
+9721
+9431
+cluster_9389_9689
+9413
+9561
+cluster_8751_9630
+10026
+cluster_9563_9597
+9058
+cluster_9043_9052
+cluster_9154_9919
+9429
+9466
+9007

@@ -1,0 +1,37 @@
+# Benchmark networks (Table 2). Scenario files are built/obtained by scenarios/*.py.
+grid4x4:
+  signals: 16
+  approach_lanes: 128
+  peak_demand_vph: 4800
+  episode_s: 3600
+  source: synthetic
+  sumocfg: data/grid4x4/grid4x4.sumocfg
+  role: training
+cologne8:
+  signals: 8
+  approach_lanes: 73
+  peak_demand_vph: 2046
+  episode_s: 3600
+  source: RESCO/TAPAS
+  sumocfg: data/cologne8/cologne8.sumocfg
+  role: evaluation
+ingolstadt21:
+  signals: 21
+  approach_lanes: 158
+  peak_demand_vph: 4283
+  episode_s: 3600
+  source: RESCO/InTAS
+  sumocfg: data/ingolstadt21/ingolstadt21.sumocfg
+  role: evaluation
+monaco15:
+  signals: 15
+  approach_lanes: 121
+  peak_demand_vph: 3518
+  episode_s: 3600
+  source: MoST corridor
+  sumocfg: data/monaco15/monaco15.sumocfg
+  edge_list: data/monaco15/edges.txt      # explicit edge list passed to netconvert
+  role: external_validation               # no hyperparameter/weight/model selection used it
+# Synthetic grids for the scalability study (Supplementary Table S5).
+grid6x6:   {signals: 36,  rows: 6,  cols: 6}
+grid10x10: {signals: 100, rows: 10, cols: 10}

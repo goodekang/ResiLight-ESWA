@@ -1,0 +1,1 @@
+Distinguish INC from SRG by localization: an incident concentrates queue growth and occupancy at one site or two adjacent sites, with queues propagating upstream from that site; a surge raises queues and inflows broadly across several worst intersections and the network-wide totals.

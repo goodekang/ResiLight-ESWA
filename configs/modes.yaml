@@ -1,0 +1,12 @@
+# Mode-conditioned reward weights (Table 1). All weights are non-negative.
+# Selected by coordinate-wise search on grid validation seeds only.
+search_values: [0, 0.4, 0.5, 0.7, 0.8, 1.0, 1.2, 1.5, 2.0]
+modes: [NORM, INC, SRG, DEG, EMG]
+weights:            # [w_q, w_p, w_e, w_s]
+  NORM: {w_q: 1.0, w_p: 0.5, w_e: 0.0, w_s: 0.5}
+  INC:  {w_q: 0.7, w_p: 1.0, w_e: 0.0, w_s: 1.5}
+  SRG:  {w_q: 0.7, w_p: 1.2, w_e: 0.0, w_s: 1.0}
+  DEG:  {w_q: 0.4, w_p: 1.2, w_e: 0.0, w_s: 0.8}
+  EMG:  {w_q: 0.8, w_p: 0.5, w_e: 2.0, w_s: 0.5}
+# Single-label oracle priority for compound events.
+compound_priority: [EMG, INC, DEG, SRG]

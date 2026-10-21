@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resilight"
+version = "1.0.0"
+description = "ResiLight: physics-informed multi-agent RL with LLM supervision for resilient network-wide traffic signal control"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pyyaml>=6.0",
+    "torch>=2.3",
+    "scikit-learn>=1.4",
+    "xgboost>=2.0",
+    "pandas>=2.1",
+]
+
+[project.optional-dependencies]
+sumo = ["eclipse-sumo>=1.20", "traci>=1.20", "sumolib>=1.20"]
+llm = ["llama-cpp-python>=0.2.80", "openai>=1.30"]
+
+[project.scripts]
+resilight-train = "resilight.train:main"
+resilight-eval = "resilight.evaluate:main"
+
+[tool.setuptools.packages.find]
+include = ["resilight*"]
